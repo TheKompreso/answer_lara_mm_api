@@ -18,6 +18,6 @@ class Group extends Model
 
     public function lectures()
     {
-        return $this->belongsToMany(Lecture::class);
+        return $this->belongsToMany(Lecture::class)->orderBy('group_lecture.id');
     }
 }

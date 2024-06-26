@@ -53,6 +53,7 @@ class LectureController extends Controller
             ], 400);
         }
         $lecture = Lecture::where('id', $id)->first();
+        if($lecture == null) return response()->json([],404);
         $lecture['name'] = $request['name'];
         $lecture['description'] = $request['description'];
         $lecture->save();
@@ -63,6 +64,7 @@ class LectureController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $lecture = Lecture::with('student_views', 'groups_views')->where('id', $id)->first();
+        if($lecture == null) return response()->json([],404);
         $lecture->student_views()->detach($lecture['student_views']);
         $lecture->groups_views()->detach($lecture['groups_views']);
         $lecture->delete();

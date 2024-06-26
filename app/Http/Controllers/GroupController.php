@@ -32,7 +32,7 @@ class GroupController extends Controller
     {
         $validator = Validator::make($request->input(),[
             'lectures' => 'required|array',
-            'lectures.*' => 'integer'
+            'lectures.*' => 'integer|exists:lectures,id'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -44,8 +44,7 @@ class GroupController extends Controller
         if($group == null) return response()->json([],404);
 
         $group->lectures()->detach($group['lectures']);
-        $lectures = Lecture::find($request['lectures']);
-        $group->lectures()->attach($lectures);
+        $group->lectures()->sync($request['lectures']);
 
         return response()->json([
             'group' => Group::with('lectures')->where('id', $id)->first()
@@ -79,6 +78,7 @@ class GroupController extends Controller
             ], 400);
         }
         $group = Group::where('id', $id)->first();
+        if($group == null) return response()->json([],404);
         $group['name'] = $request['name'];
         $group->save();
         return response()->json([
@@ -88,6 +88,7 @@ class GroupController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $group = Group::with('students','lectures')->where('id', $id)->first();
+        if($group == null) return response()->json([],404);
         $group->students()->update(['group_id' => null]);
         $group->lectures()->detach($group['lectures']);
         $group->delete();

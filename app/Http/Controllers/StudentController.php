@@ -46,7 +46,7 @@ class StudentController extends Controller
     {
         $validator = Validator::make($request->input(),[
             'email' => 'email|unique:students',
-            'group_id' => 'integer'
+            'group_id' => 'integer|exists:groups,id'
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -54,6 +54,7 @@ class StudentController extends Controller
             ], 400);
         }
         $student = Student::where('id', $id)->first();
+        if($student == null) return response()->json([],404);
         if(isset($request['group_id'])) $student->group_id = $request['group_id'];
         if(isset($request['name'])) $student->name = $request['name'];
         if(isset($request['email'])) $student->email = $request['email'];
