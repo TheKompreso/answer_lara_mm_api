@@ -11,7 +11,7 @@ class Group extends Model
     public $timestamps = false;
     protected $fillable = ['name'];
 
-    public  function students()
+    public function students()
     {
         return $this->hasMany(Student::class);
     }
