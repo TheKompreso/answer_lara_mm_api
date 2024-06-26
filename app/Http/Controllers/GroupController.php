@@ -87,10 +87,11 @@ class GroupController extends Controller
     }
     public function destroy(int $id): JsonResponse
     {
-        $group = Group::with('students','lectures')->where('id', $id)->first();
+        $group = Group::with('students','lectures','lecture_views')->where('id', $id)->first();
         if($group == null) return response()->json([],404);
         $group->students()->update(['group_id' => null]);
         $group->lectures()->detach($group['lectures']);
+        $group->lecture_views()->detach($group['lecture_views']);
         $group->delete();
 
         return response()->json([

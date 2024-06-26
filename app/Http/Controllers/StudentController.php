@@ -65,7 +65,10 @@ class StudentController extends Controller
     }
     public function destroy(int $id): JsonResponse
     {
-        Student::where('id', $id)->delete();
+        $student = Student::with('lecture_views')->where('id', $id)->first();
+        if($student == null) return response()->json([],404);
+        $student->lecture_views()->detach($student['lecture_views']);
+        $student->delete();
         return response()->json([
             'message' => 'Student deleted'
         ], 200);

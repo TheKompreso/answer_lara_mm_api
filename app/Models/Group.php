@@ -20,4 +20,8 @@ class Group extends Model
     {
         return $this->belongsToMany(Lecture::class)->orderBy('group_lecture.id');
     }
+    public function lecture_views()
+    {
+        return $this->belongsToMany(Lecture::class,'group_lecture_views');
+    }
 }
